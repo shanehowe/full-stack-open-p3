@@ -1,10 +1,11 @@
 const express = require("express")
 const app = express()
-app.use(express.json())
 const morgan = require("morgan")
 require("dotenv").config()
-const Person = require("./models/person")
 const cors = require("cors")
+const Person = require("./models/person")
+
+app.use(express.json())
 app.use(cors())
 app.use(express.static("build"))
 
@@ -94,6 +95,14 @@ app.put("/api/persons/:id", (request, response, next) => {
         })
         .catch(error => next(error))
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send(
+        { error: "unknown endpoint" }
+    )
+}
+
+app.use(unknownEndpoint)
 
 // move error handling to middleware
 const errorHandler = (error, request, response, next) => {
