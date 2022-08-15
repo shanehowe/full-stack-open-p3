@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require("mogoose")
 
 if (process.argv.length < 3)
 {
@@ -31,7 +31,7 @@ if (process.argv.length === 5)
     const number = process.argv[4]
 
     mongoose.connect(url)
-        .then(result => {
+        .then(() => {
 
             const person = new Person({
                 name: name,
@@ -48,10 +48,10 @@ if (process.argv.length === 5)
         .catch(err => console.log(err))
 }
 
-if (process.argv.length === 3) 
+if (process.argv.length === 3)
 {
     mongoose.connect(url)
-        .then(result =>{
+        .then(() => {
 
             Person.find({}).then(persons => {
                 console.log("Phonebook:")
@@ -59,6 +59,6 @@ if (process.argv.length === 3)
 
                 mongoose.connection.close()
             })
-            })
+        })
         .catch(err => console.log(err))
 }

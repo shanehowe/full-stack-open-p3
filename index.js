@@ -1,29 +1,28 @@
-const express = require('express')
+const express = require("express")
 const app = express()
 app.use(express.json())
-const morgan = require('morgan')
-require('dotenv').config()
-const Person = require('./models/person')
-const cors = require('cors')
+const morgan = require("morgan")
+require("dotenv").config()
+const Person = require("./models/person")
+const cors = require("cors")
 app.use(cors())
-app.use(express.static('build'))
+app.use(express.static("build"))
 
 morgan.token("data", (request) => {
-    return request.method === "POST" || request.method == "PUT" ? JSON.stringify(request.body) : " ";
-  })
+    return request.method === "POST" || request.method === "PUT" ? JSON.stringify(request.body) : " "
+})
 
 //   middle ware to log information to the console
 app.use(
     morgan(":method :url :status :res[content-length] - :response-time ms :data")
 )
 
-app.get('/', (request, response) => {
-    response.send('Phonebook backend')
+app.get("/", (request, response) => {
+    response.send("Phonebook backend")
 })
 
 // get all persons
-app.get('/api/persons', (request, response) => {
-    
+app.get("/api/persons", (request, response) => {
     Person.find({})
         .then(persons => {
             response.json(persons)
@@ -31,7 +30,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 // get info for amount of persons
-app.get('/info', (request, response) => {
+app.get("/info", (request, response) => {
     const amount = null
 
     response.send(`Phonebook has info for ${amount} people.  ${new Date()}`)
@@ -39,7 +38,7 @@ app.get('/info', (request, response) => {
 })
 
 // get single person
-app.get('/api/persons/:id', (request, response, next) => {
+app.get("/api/persons/:id", (request, response, next) => {
     const id = request.params.id
 
     // Mongo find by id method
@@ -48,7 +47,7 @@ app.get('/api/persons/:id', (request, response, next) => {
             if (foundPerson)
             {
                 response.json(foundPerson)
-            } else 
+            } else
             {
                 response.status(404).end()
             }
@@ -57,18 +56,18 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 // delete person
-app.delete('/api/persons/:id', (request, response, next) => {
+app.delete("/api/persons/:id", (request, response, next) => {
     const id = request.params.id
 
     Person.findByIdAndRemove(id)
-        .then(result => {
+        .then(() => {
             response.status(204).end()
         })
         .catch(error => next(error))
 })
 
 // add person through post requst
-app.post('/api/persons', (request, response, next) => {
+app.post("/api/persons", (request, response, next) => {
     const body = request.body
 
     // new person model for mongodb
@@ -87,8 +86,8 @@ app.post('/api/persons', (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
     const { name, number } = request.body
 
-    Person.findByIdAndUpdate(request.params.id, 
-        { name, number }, 
+    Person.findByIdAndUpdate(request.params.id,
+        { name, number },
         { new: true, runValidators: true, context: "query" })
         .then(updatedPerson => {
             response.json(updatedPerson)
