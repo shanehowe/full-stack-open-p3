@@ -92,9 +92,7 @@ app.put("/api/persons/:id", (request, response, next) => {
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
-        .catch(error => {
-            next(error)
-        })
+        .catch(error => next(error))
 })
 
 // move error handling to middleware
