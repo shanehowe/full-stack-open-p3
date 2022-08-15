@@ -9,9 +9,10 @@ app.use(cors())
 app.use(express.static('build'))
 
 morgan.token("data", (request) => {
-    return request.method === "POST" ? JSON.stringify(request.body) : " ";
+    return request.method === "POST" || request.method == "PUT" ? JSON.stringify(request.body) : " ";
   })
-  
+
+//   middle ware to log information to the console
 app.use(
     morgan(":method :url :status :res[content-length] - :response-time ms :data")
 )
@@ -38,7 +39,7 @@ app.get('/info', (request, response) => {
 })
 
 // get single person
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
 
     // Mongo find by id method
@@ -56,7 +57,7 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 // delete person
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
 
     Person.findByIdAndRemove(id)
@@ -89,7 +90,7 @@ app.post('/api/persons', (request, response) => {
     })
 })
 
-app.put("/api/persons/:id", (request, response) => {
+app.put("/api/persons/:id", (request, response, next) => {
     const id = request.params.id
     const body = request.body
 
@@ -113,7 +114,7 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === "CastError")
     {
         return response.status(400).send(
-            { error: "malformatted id"}
+            { error: "malformatted id" }
         )
     }
 

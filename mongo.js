@@ -24,35 +24,34 @@ if (process.argv.length === 5)
     const number = process.argv[4]
 
     mongoose.connect(url)
-            .then(result => {
+        .then(result => {
 
-                const person = new Person({
-                    name: name,
-                    number: number
-                })
-
-                return person.save()
+            const person = new Person({
+                name: name,
+                number: number
             })
-            .then(() => {
-                console.log(`Added ${name}, number: ${number} to phonebook`)
 
-                return mongoose.connection.close()
-            })
-            .catch(err => console.log(err))
+            return person.save()
+        })
+        .then(() => {
+            console.log(`Added ${name}, number: ${number} to phonebook`)
+
+            return mongoose.connection.close()
+        })
+        .catch(err => console.log(err))
 }
 
 if (process.argv.length === 3) 
 {
     mongoose.connect(url)
-            .then(result =>{
+        .then(result =>{
 
-                Person.find({}).then(persons => {
+            Person.find({}).then(persons => {
+                console.log("Phonebook:")
+                persons.forEach(person => console.log("  •", person.name, person.number))
 
-                    console.log("Phonebook:")
-                    persons.forEach(person => console.log("  •", person.name, person.number))
-
-                    mongoose.connection.close()
-                })
-                })
-            .catch(err => console.log(err))
+                mongoose.connection.close()
+            })
+            })
+        .catch(err => console.log(err))
 }
